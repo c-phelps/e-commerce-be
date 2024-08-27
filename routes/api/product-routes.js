@@ -67,20 +67,26 @@ router.post("/", (req, res) => {
 router.put("/:id", (req, res) => {
   // update product data
   Product.update(req.body, {
+    // call update on WHERE id = param id
     where: {
       id: req.params.id,
     },
   })
     .then((product) => {
+      //that update is being returned as a promise in this then as product
       if (req.body.tagIds && req.body.tagIds.length) {
+        //if tagsIds exists and the array is not empty
         ProductTag.findAll({
+          // tags exists, return values from productTag as a promise WHERE the product ids align
           where: { product_id: req.params.id },
         }).then((productTags) => {
+          //promised prodcutTag results
           // create filtered list of new tag_ids
-          const productTagIds = productTags.map(({ tag_id }) => tag_id);
+          const productTagIds = productTags.map(({ tag_id }) => tag_id); //convert the object to an array of tag_ids
           const newProductTags = req.body.tagIds
-            .filter((tag_id) => !productTagIds.includes(tag_id))
+            .filter((tag_id) => !productTagIds.includes(tag_id)) //filter the array to only include where the productTagId does not exist in the req
             .map((tag_id) => {
+              //return an array of objects with the product id and tag id for the producttag model/junction table
               return {
                 product_id: req.params.id,
                 tag_id,
@@ -89,8 +95,8 @@ router.put("/:id", (req, res) => {
 
           // figure out which ones to remove
           const productTagsToRemove = productTags
-            .filter(({ tag_id }) => !req.body.tagIds.includes(tag_id))
-            .map(({ id }) => id);
+            .filter(({ tag_id }) => !req.body.tagIds.includes(tag_id)) //check the promised procutTag search (destructured as tagid) is not includeded in the req body
+            .map(({ id }) => id); // returns a new array of only the id properties of the product object
           // run both actions
           return Promise.all([
             ProductTag.destroy({ where: { id: productTagsToRemove } }),
