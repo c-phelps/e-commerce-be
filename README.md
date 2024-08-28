@@ -1,6 +1,6 @@
 # E-Commerce-BackEnd [![License:](https://img.shields.io/badge/License:-MIT-red)](http://choosealicense.com/licenses/mit/)
 
-Walkthrough video link:
+Walkthrough video link: https://streamable.com/q9r2de
 
 ## Table of Contents
 
