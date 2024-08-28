@@ -63,6 +63,7 @@ router.post("/", (req, res) => {
     });
 });
 
+// added  my own comments to try and decipher what is happening
 // update product
 router.put("/:id", (req, res) => {
   // update product data

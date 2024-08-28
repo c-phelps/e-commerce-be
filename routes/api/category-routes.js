@@ -29,12 +29,32 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-router.post("/", (req, res) => {
+router.post("/", async (req, res) => {
   // create a new category
+  // {
+  //   category_name: "science_tools",
+  // }
+  try {
+    const category = await Category.create(req.body);
+    res.status(200).json(category);
+  } catch (err) {
+    console.log(err);
+    res.status(400).json(err);
+  }
 });
 
-router.put("/:id", (req, res) => {
+router.put("/:id", async (req, res) => {
   // update a category by its `id` value
+  const category = await Category.update(req.body, {
+    where: {
+      id: req.params.id,
+    },
+  });
+  if (category[0] === 0) {
+    return res.status(404).json({ message: "Category not found or no changes made." });
+  } else {
+    res.status(200).json(category);
+  }
 });
 
 router.delete("/:id", async (req, res) => {
