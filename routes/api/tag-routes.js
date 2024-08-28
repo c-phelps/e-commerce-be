@@ -37,7 +37,7 @@ router.post("/", async (req, res) => {
   // }
   try {
     const tag = await Tag.create(req.body);
-    if (req.body.productIds.length) {
+    if (req.body.productIds && req.body.productIds.length) {
       const productTagIdArr = req.body.productIds.map((product_id) => {
         return {
           product_id,
@@ -45,12 +45,13 @@ router.post("/", async (req, res) => {
         };
       });
       const prodTag = await ProductTag.bulkCreate(productTagIdArr);
-      res.status(200).json(prodTag);
+      return res.status(200).json(prodTag);
+    } else {
+      return res.status(200).json(tag);
     }
-    res.status(200).json(tag);
   } catch (err) {
     console.log(err);
-    res.status(400).json(err);
+    return res.status(400).json(err);
   }
 });
 
@@ -97,7 +98,7 @@ router.put("/:id", async (req, res) => {
 router.delete("/:id", async (req, res) => {
   // delete on tag by its `id` value
   try {
-    const tagData = await Product.destroy({
+    const tagData = await Tag.destroy({
       where: {
         id: req.params.id,
       },
